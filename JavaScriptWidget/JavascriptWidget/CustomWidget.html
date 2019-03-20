@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Custom Javascript Widget</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="container" class="container" style="width:300px;height:600px;">
+        <div class="row">
+            <div id="leftSide" class="col" style="height:600px;">
+            </div>
+            <div id="rightSide" class="col">
+            </div>
+        </div>
+    </div>
+    <script>
+        var header = document.getElementById('container');
+        var left = document.getElementById('leftSide');
+        var right = document.getElementById('rightSide');
+        header.style.textAlign = 'center';
+        var url = 'https://www.reddit.com/r/worldnews.json';
+        var request = new XMLHttpRequest();
+        request.open('GET', url);
+        request.responseType = 'json';
+        request.send();
+        request.onload = function () {
+            var articles = request.response;
+            populateHeader(articles);
+        }
+        function populateHeader(jsonObj) {
+            for (var i = 0; i < 5; i++) {
+                var side = document.createElement('div');
+                if (i % 2 == 0) {
+                    left.appendChild(side);
+                    side.style.height = '190px';
+                    side.style.marginBottom = '15px';
+                }
+                else {
+                    right.appendChild(side);
+                    side.style.height = '190px';
+                    side.style.marginBottom = '15px';
+                }
+                side.style.fontSize = '10px';
+                side.style.margin = 'auto';
+                var title = document.createElement('p');
+                title.style.fontWeight = 'bold';
+                title.style.marginBottom = '2px';
+                title.style.display = 'inline';
+                title.textContent = jsonObj['data']['children'][i]['data']['title'];
+                var myPara = document.createElement('p');
+                myPara.style.marginBottom = '3px';
+                myPara.style.display = 'inline';
+                myPara.textContent = 'Author: ' + jsonObj['data']['children'][i]['data']['author'];
+                var domainLink = document.createElement('a');
+                domainLink.href = 'https://www.' + jsonObj['data']['children'][i]['data']['domain'];
+                domainLink.textContent = jsonObj['data']['children'][i]['data']['domain'] + "\n";
+                domainLink.style.display = 'inline';
+                linebreak = document.createElement('br');
+                var urlLink = document.createElement('a');
+                urlLink.style.paddingBottom = '10px';
+                urlLink.href = 'https://www.' + jsonObj['data']['children'][i]['data']['url'];
+                urlLink.textContent = 'Read More';
+                urlLink.style.display = 'inline';
+                side.appendChild(title);
+                side.appendChild(myPara);
+                side.appendChild(domainLink);
+                side.appendChild(linebreak);
+                side.appendChild(urlLink);
+            }
+        }
+    </script>
+</body>
+</html>
